@@ -1,47 +1,47 @@
 package org.example.p2e_map
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.safeContentPadding
-import androidx.compose.material3.Button
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
-import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import org.jetbrains.compose.resources.painterResource
-
-import p2e_map.composeapp.generated.resources.Res
-import p2e_map.composeapp.generated.resources.compose_multiplatform
+import org.example.p2e_map.widgets.DetailedDrawerExample
+import org.example.p2e_map.widgets.ResourcesTileProvider
+import org.example.p2e_map.widgets.UiMapContainer
+import ovh.plrapps.mapcompose.api.addLayer
+import ovh.plrapps.mapcompose.ui.state.MapState
 
 @Composable
 fun App() {
     MaterialTheme {
-        var showContent by remember { mutableStateOf(false) }
-        Column(
-            modifier = Modifier
-                .background(MaterialTheme.colorScheme.primaryContainer)
-                .safeContentPadding()
-                .fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            Button(onClick = { showContent = !showContent }) {
-                Text("Click me!")
+        val mapState = remember {
+            MapState(
+                levelCount = 1,
+                fullWidth = 3840,
+                fullHeight = 2160,
+                tileSize = 1080
+            ).apply {
+                addLayer(ResourcesTileProvider("drawable/tiles"))
             }
-            AnimatedVisibility(showContent) {
-                val greeting = remember { Greeting().greet() }
-                Column(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                ) {
-                    Image(painterResource(Res.drawable.compose_multiplatform), null)
-                    Text("Compose: $greeting")
-                }
-            }
+        }
+        DetailedDrawerExample(mapState) { paddingValues ->
+            UiMapContainer(modifier = Modifier.padding(paddingValues),mapState=mapState)
+//            val imageWidthPx: Int = 3840
+//            val imageHeightPx: Int = 2160
+//            val tilesBasePath: String = "drawable/tiles"
+//            val mapState = remember {
+//                MapState(
+//                    levelCount = 1,
+//                    fullWidth = imageWidthPx,
+//                    fullHeight = imageHeightPx,
+//                    tileSize = 1080
+//                ).apply {
+//                    addLayer(ResourcesTileProvider(tilesBasePath))
+//                }
+//            }
+//            mapState.disableZooming()
+//            mapState.disableFlingZoom()
+//            ClickToAddPinsMap(modifier = Modifier.padding(paddingValues), mapState = mapState, fullWidth = imageWidthPx, fullHeight = imageHeightPx)
         }
     }
 }

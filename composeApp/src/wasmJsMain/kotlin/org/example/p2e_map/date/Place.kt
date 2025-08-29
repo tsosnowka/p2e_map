@@ -1,0 +1,118 @@
+package org.example.p2e_map.date
+
+class Place(
+    val x: Double,
+    val y: Double,
+    val description: String,
+    val id: Int
+) {
+
+    companion object {
+        //source of positions of the pins 1920x1080
+        fun getAll(width: Int=1920, height: Int=1080) = listOf(
+            Place(299.0 / width, 96.0 / height, "Kartograf Gorgias", 1),
+            Place(430.0 / width, 198.0 / height, "Stocznia", 2),
+            Place(483.0 / width, 198.0 / height, "Kuźnia Olberga", 3),
+            Place(440.0 / width, 328.0 / height, "Port Handlowy", 4),
+            Place(618.0 / width, 176.0 / height, "Karczma: Łeb Hydry", 5),
+            Place(727.0 / width, 288.0 / height, "Karczma: Pod Piracką Zęzą", 6),
+            Place(799.0 / width, 369.0 / height, "Magazyny Gildii", 7),
+            Place(820.0 / width, 422.0 / height, "Kuźnia Jorbaga", 8),
+            Place(821.0 / width, 461.0 / height, "Płatnerz Omari", 9),
+            Place(886.0 / width, 441.0 / height, "I Bank Oklyoński", 10),
+            Place(971.0 / width, 434.0 / height, "Główne koszary miejskie", 11),
+            Place(869.0 / width, 515.0 / height, "Łuczarz Pylades", 12),
+            Place(792.0 / width, 627.0 / height, "Pyrravyn - Alchemik", 13),
+            Place(815.0 / width, 824.0 / height, "Koszary Południowe", 14),
+            Place(850.0 / width, 1009.0 / height, "Arena Ostrakońska", 15),
+            Place(738.0 / width, 825.0 / height, "Gospoda: Pod Łabędzim Skrzydłem", 16),
+            Place(685.0 / width, 678.0 / height, "Świątynia Gotrel", 17),
+            Place(608.0 / width, 727.0 / height, "Plac Targowy", 18),
+            Place(660.0 / width, 544.0 / height, "Dykterion Meiry", 19),
+            Place(1012.0 / width, 634.0 / height, "Świątynia Horkosa", 20),
+            Place(980.0 / width, 727.0 / height, "Karczma: Pod Urwanym Żaglem", 21),
+            Place(1064.0 / width, 126.0 / height, "Port Wojenny", 22),
+            Place(1188.0 / width, 64.0 / height, "Twierdza Morska", 23),
+            Place(1063.0 / width, 409.0 / height, "Beleuterion", 24),
+            Place(1122.0 / width, 415.0 / height, "Trastigonejon miejski", 25),
+            Place(1092.0 / width, 602.0 / height, "Biblioteka Oklyońska", 26),
+            Place(1106.0 / width, 585.0 / height, "Nowa Akademia Oklyońska", 27),
+            Place(1169.0 / width, 708.0 / height, "Dzielnica Arystokratów", 28),
+            Place(1135.0 / width, 825.0 / height, "Handlarz Wierzchowców", 29),
+            Place(1224.0 / width, 827.0 / height, "Gospoda: Spokojne Wody", 30),
+            Place(1483.0 / width, 969.0 / height, "Hipodrom", 31),
+            Place(1862.0 / width, 926.0 / height, "Nekropolia", 32),
+            Place(1638.0 / width, 851.0 / height, "Koszary Zachodnie", 33),
+            Place(1631.0 / width, 741.0 / height, "Gospoda: Sen Livo", 34),
+            Place(1623.0 / width, 712.0 / height, "Świątynia Livo", 35),
+            Place(1720.0 / width, 567.0 / height, "Pozostałości po klątwie", 36),
+            Place(1429.0 / width, 779.0 / height, "Sklep - Biblioteka Mnemosyne", 37),
+            Place(1458.0 / width, 662.0 / height, "Dykterion Arasny", 38),
+            Place(1428.0 / width, 608.0 / height, "Dikasterion", 39),
+            Place(1400.0 / width, 573.0 / height, "Agora", 40),
+            Place(1340.0 / width, 482.0 / height, "Arena Miejska", 41),
+            Place(1387.0 / width, 434.0 / height, "Herozjon Iseasa", 42),
+            Place(1486.0 / width, 484.0 / height, "Łaźnie publiczne", 43),
+            Place(1251.0 / width, 631.0 / height, "Ruiny teatru", 44),
+            Place(1181.0 / width, 531.0 / height, "Świątynia Trastigosa Świetlistego", 45),
+            Place(1263.0 / width, 338.0 / height, "Twierdza Miejska/Skarbiec", 46)
+            //TODO TOMEK
+//            Place(0.11015625,0.17962962, "Karczma: Pod Piracką Zęzą", -999999),
+//            Place(0.27239582,0.20462963, "Świątynia Trastigosa Świetlistego", -999999),
+//            Place(0.22421876,0.27916667,"Ruiny teatru", -999999),
+//            Place(0.23359375,0.25601852, "Nowa Akademia Oklyońska", -999999),
+//            Place(0.22395833,0.18425927,"Stocznia", -999999),
+//            Place(0.17265625,0.20555556,"Port Handlowy", -999999),
+//            Place(0.22447917,0.11388889, "Port Wojenny", -999999),
+//            Place(0.2015625,0.058796298, "Twierdza Morska", -999999),
+//            Place(0.14791666,0.16898148,"Świątynia Gotrel", -999999),
+//            Place(0.12526041,0.098148145, "Magazyny Gildii", -999999),
+//            Place(0.08359375,0.10462963, "Kuźnia Jorbaga", -999999),
+//            Place(0.21484375,0.21666667, "Agora", -999999),
+//            Place(0.15963541,0.12361111,"Świątynia Livo", -999999),
+//            Place(0.18463542,0.3013889,"Świątynia Horkosa", -999999),
+//            Place(0.2265625,0.27222222, "Biblioteka Oklyońska", -999999),
+//            Place(0.22786458,0.11898148, "Herozjon Iseasa", -999999),
+//            Place(0.225,0.09907407, "Twierdza Miejska/Skarbiec", -999999),
+//            Place(0.11640625,0.25416666,"Koszary Południowe", -999999),
+//            Place(0.16276042,0.11666667, "Główne koszary miejskie", -999999),
+//            Place(0.2515625,0.18518518,"Kuźnia Olberga", -999999),
+//            Place(0.21145834,0.09259259, "Beleuterion", -999999),
+//            Place(0.18776041,0.2550926,"Dikasterion", -999999),
+//            Place(0.19635417,0.13101852, "Łaźnie publiczne", -999999),
+//            Place(0.21432291,0.16064815, "Karczma: Łeb Hydry", -999999),
+//            Place(0.15677084,0.12685186,"Karczma: Pod Urwanym Żaglem", -999999),
+//            Place(0.20442708,0.19722222,"Gospoda: Spokojne Wody", -999999),
+//            Place(0.1734375,0.23101851,"Gospoda: Sen Livo", -999999),
+//            Place(0.240625,0.15833333, "Arena Miejska", -999999),
+//            Place(0.22630209,0.20462963, "Pozostałości po klątwie", -999999),
+//            Place(0.16744791,0.21712963,"Koszary Zachodnie", -999999),
+//            Place(0.28489584,0.2824074,"Nekropolia", -999999),
+//            Place(0.14479166,0.3236111,"Hipodrom", -999999),
+//            Place(0.17317708,0.2523148,"Gospoda: Pod Łabędzim Skrzydłem", -999999),
+//            Place(0.16588542,0.25,"Plac Targowy", -999999),
+//            Place(0.13984375,0.0837963, "Dykterion Meiry", -999999),
+//            Place(0.21276042,0.16574074,"Dykterion Arasny", -999999),
+//            Place(0.24244791,0.09861111, "Trastigonejon miejski", -999999),
+//            Place(0.19036458,0.20231481,"Dzielnica Arystokratów", -999999),
+//            Place(0.11875,0.12222222, "I Bank Oklyoński", -999999),
+//            Place(0.10963542,0.36157408,"Arena Ostrakońska", -999999),
+//            Place(0.08541667,0.1425926, "Płatnerz Omari", -999999),
+//            Place(0.17447917,0.15925926,"Pyrravyn - Alchemik", -999999),
+//            Place(0.15598959,0.08888889,"Kartograf Gorgias", -999999),
+//            Place(0.110416666,0.19166666, "Łuczarz Pylades", -999999),
+//            Place(0.16067709,0.24490741,"Handlarz Wierzchowców", -999999),
+//            Place(0.1796875,0.23287037,"Sklep - Biblioteka Mnemosyne", -999999)
+        ).sortedWith(
+            compareBy(String.CASE_INSENSITIVE_ORDER) { it.description }
+        ).mapIndexed { index, places ->
+            Place(
+                x = places.x,
+                y = places.y,
+                description = places.description,
+                id = 1 + index
+            )
+        }
+    }
+}
+

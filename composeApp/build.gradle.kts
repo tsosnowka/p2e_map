@@ -1,6 +1,6 @@
-import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpackConfig
+import tiler.GenerateTiles
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -28,9 +28,10 @@ kotlin {
         }
         binaries.executable()
     }
-    
+
     sourceSets {
         commonMain.dependencies {
+            implementation("ovh.plrapps:mapcompose-mp:0.10.0")
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.material3)
@@ -46,4 +47,10 @@ kotlin {
     }
 }
 
-
+tasks.register<GenerateTiles>("generateTiles") {
+    group = "tiles"
+    description = "Tnie obraz na kafelki do tiles/<zoom>/<row>/<col>.<format>"
+}
+/**
+./gradlew :composeApp:generateTiles -Psrc=C:\\git\\p2e_map\\composeApp\\src\\wasmJsMain\\composeResources\\drawable\\oklyon.png -Pout=C:\\git\\p2e_map\\composeApp\\src\\wasmJsMain\\composeResources\\drawable\\tiles -Ptile=256 -Plevels=1 -Pformat=png
+ */
