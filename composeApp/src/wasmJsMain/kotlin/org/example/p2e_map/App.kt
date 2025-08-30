@@ -17,7 +17,7 @@ fun App() {
                 levelCount = 1,
                 fullWidth = 3840,
                 fullHeight = 2160,
-                tileSize = 1080
+                tileSize = 3840
             ).apply {
                 addLayer(ResourcesTileProvider("drawable/tiles"))
             }
