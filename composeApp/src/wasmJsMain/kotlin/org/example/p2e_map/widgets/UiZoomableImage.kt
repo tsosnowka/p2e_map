@@ -18,12 +18,11 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.unit.IntSize
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
-import p2e_map.composeapp.generated.resources.pin_png
 
 @Composable
 fun UiZoomableImage(
     modifier: Modifier = Modifier,
-    res: DrawableResource = Res.drawable.pin_png
+    res: DrawableResource
 ) {
     val painter = painterResource(res)
 
