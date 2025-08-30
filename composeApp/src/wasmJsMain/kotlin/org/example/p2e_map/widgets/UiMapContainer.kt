@@ -1,73 +1,63 @@
 package org.example.p2e_map.widgets
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.gestures.detectTapGestures
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.onPointerEvent
-import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.launch
 import kotlinx.io.Buffer
 import kotlinx.io.RawSource
 import org.example.p2e_map.date.Place
-import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.skiko.hostOs
 import ovh.plrapps.mapcompose.api.*
 import ovh.plrapps.mapcompose.core.TileStreamProvider
 import ovh.plrapps.mapcompose.ui.MapUI
 import ovh.plrapps.mapcompose.ui.state.MapState
 import p2e_map.composeapp.generated.resources.Res
-import p2e_map.composeapp.generated.resources.pin_png
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun UiMapContainer(
-    modifier: Modifier = Modifier,
-    mapState: MapState
+    mapState: MapState,
+    modifier: Modifier = Modifier
 ) {
-    val step = 1.2
-    mapState.disableZooming()
-    mapState.disableFlingZoom()
-    val scope = rememberCoroutineScope()
 
-    LaunchedEffect(Unit) {
-        Place.getAll().forEach {
-            addPin(mapState, it)
-        }
-    }
-
-    Box(
-        modifier
-            .onPointerEvent(PointerEventType.Scroll, pass = PointerEventPass.Initial) { ev ->
+    var newModifier: Modifier = modifier
+    if (hostOs.isLinux || hostOs.isWindows || hostOs.isMacOS) {
+        val step = 1.2
+        mapState.disableZooming()
+        mapState.disableFlingZoom()
+        val scope = rememberCoroutineScope()
+        newModifier = newModifier
+            .onPointerEvent(
+                eventType = PointerEventType.Scroll,
+                pass = PointerEventPass.Initial
+            ) { ev ->
                 val firstChange = ev.changes.firstOrNull() ?: return@onPointerEvent
                 val dy = firstChange.scrollDelta.y
                 val factor = if (dy < 0f) step else (1.0 / step)
-                val newScale = (mapState.scale * factor).coerceIn(mapState.minScale, mapState.maxScale)
+                val oldScale = mapState.scale
+                val newScale = (oldScale * factor).coerceIn(mapState.minScale, mapState.maxScale)
                 ev.changes.forEach { it.consume() }
+                val newX = mapState.centroidX
+                val newY = mapState.centroidY
+                mapState.scale = newScale
                 scope.launch {
-                    mapState.scrollTo(
-                        mapState.centroidX,
-                        mapState.centroidY,
-                        destScale = mapState.scale
+                    mapState.snapScrollTo(
+                        newX,
+                        newY
                     )
                 }
-                mapState.scale = newScale
             }
-            .fillMaxSize()
+    }
+    Box(
+        newModifier.fillMaxSize()
     ) {
         MapUI(
             modifier = Modifier.fillMaxSize(),
@@ -76,7 +66,8 @@ fun UiMapContainer(
     }
 }
 
-private fun addPin(
+fun addPin(
+    onClick: (Place) -> Unit,
     mapState: MapState,
     place: Place
 ) {
@@ -85,59 +76,27 @@ private fun addPin(
         x = place.x,
         y = place.y
     ) {
-        val painter = painterResource(Res.drawable.pin_png)
-        Box(modifier = Modifier.size(48.dp)
-            .pointerInput(Unit) {
-                detectTapGestures(
-                    onTap = { showCallout(mapState, place) }
-                )
-            }
-        ) {
-            Image(
-                modifier = Modifier.fillMaxSize(),
-                contentDescription = "Pin",
-                painter = painter
-            )
-            Text(
-                text = "${place.id}",
-                modifier = Modifier
-                    .wrapContentSize()
-                    .padding(bottom = 8.dp)
-                    .align(Alignment.Center),
-                color = Color.White,
-                textAlign = TextAlign.Center,
-                fontSize = 24.sp
-            )
-        }
-
+        UiPinImage({
+            onClick(place)
+            showCallout(mapState, place) }, place,false)
     }
 }
 
-private fun showCallout(
+fun showCallout(
     mapState: MapState,
-    place: Place
+    place: Place,
+    enableTooltips:Boolean = false
 ) {
-    val calloutId = "callout-${place.id}"
-
-    mapState.removeCallout(calloutId)
-
-    mapState.addCallout(
-        id = calloutId,
-        x = place.x,
-        y = place.y,
-        autoDismiss = true
-    ) {
-        Surface(
-            shadowElevation = 8.dp,
-            shape = MaterialTheme.shapes.medium
-        ) {
-            Column(Modifier.padding(10.dp)) {
-                Text("${place.id} | ${place.description}", style = MaterialTheme.typography.titleMedium)
-                TextButton(
-                    onClick = { mapState.removeCallout(calloutId) }
-                ) { Text("Zamknij") }
-            }
-        }
+    if (enableTooltips){
+        val calloutId = "${place.id}"
+        mapState.removeCallout(calloutId)
+        mapState.addCallout(
+            id = calloutId,
+            x = place.x,
+            y = place.y,
+            autoDismiss = true,
+            c = { UiMapTooltip(calloutId, mapState, place) }
+        )
     }
 }
 
