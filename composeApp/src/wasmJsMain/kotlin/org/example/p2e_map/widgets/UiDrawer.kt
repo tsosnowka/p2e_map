@@ -29,6 +29,7 @@ import p2e_map.composeapp.generated.resources.Res
 import p2e_map.composeapp.generated.resources.arrow_back
 import p2e_map.composeapp.generated.resources.menu
 import p2e_map.composeapp.generated.resources.zoom_in
+import kotlin.math.max
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -154,7 +155,7 @@ fun DetailedDrawerExample(
                         )
                         VerticalDivider(modifier = Modifier.padding(vertical = 12.dp, horizontal = 4.dp))
                         Text(
-                            text = zoom.toString(),
+                            text = doubleToString(zoom),
                             style = MaterialTheme.typography.titleLarge
                         )
                     }
@@ -205,5 +206,12 @@ private fun bottomBarScrollTo(mapState: MapState, scope: CoroutineScope, scale: 
             newX,
             newY
         )
+    }
+}
+
+private fun doubleToString(double: Double) = double.toString().let {
+    when {
+        it.length < 4 -> it
+        else -> it.substring(0, 4)
     }
 }
