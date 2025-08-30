@@ -27,12 +27,11 @@ fun UiMapContainer(
     mapState: MapState,
     modifier: Modifier = Modifier
 ) {
-
+    mapState.disableZooming()
+    mapState.disableFlingZoom()
     var newModifier: Modifier = modifier
     if (hostOs.isLinux || hostOs.isWindows || hostOs.isMacOS) {
         val step = 1.2
-        mapState.disableZooming()
-        mapState.disableFlingZoom()
         val scope = rememberCoroutineScope()
         newModifier = newModifier
             .onPointerEvent(
@@ -43,7 +42,7 @@ fun UiMapContainer(
                 val dy = firstChange.scrollDelta.y
                 val factor = if (dy < 0f) step else (1.0 / step)
                 val oldScale = mapState.scale
-                val newScale = (oldScale * factor).coerceIn(mapState.minScale, mapState.maxScale)
+                val newScale = (oldScale * factor)
                 ev.changes.forEach { it.consume() }
                 val newX = mapState.centroidX
                 val newY = mapState.centroidY
