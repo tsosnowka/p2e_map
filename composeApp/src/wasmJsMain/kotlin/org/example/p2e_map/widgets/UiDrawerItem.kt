@@ -20,8 +20,12 @@ import org.example.p2e_map.date.Place
 @Composable
 fun UiDrawerItem(
     place: Place,
+    enabled: Boolean,
     onClick: (Place) -> Unit
 ) {
+    val color =
+        if (enabled) MyColors.pinEnabledColor
+        else MyColors.pinDisabledColor
     NavigationDrawerItem(
         label = { Text(place.description) },
         selected = false,
@@ -30,7 +34,7 @@ fun UiDrawerItem(
                 Modifier
                     .size(32.dp)
                     .background(
-                        color = MyColors.pinDisabledColor,
+                        color = color,
                         shape = CircleShape
                     ),
                 contentAlignment = Alignment.Center

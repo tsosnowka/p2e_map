@@ -28,7 +28,8 @@ fun UiPinImage(
         if (enabled) Res.drawable.pin_enabled
         else Res.drawable.pin_disabled
     )
-    Box(modifier = Modifier.size(48.dp)
+    Box(modifier = Modifier
+        .size(width = 32.dp, height = 40.dp)
         .pointerInput(Unit) {
             detectTapGestures(
                 onTap = { onTapAction() }
