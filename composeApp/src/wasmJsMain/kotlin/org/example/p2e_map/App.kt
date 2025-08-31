@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import kotlinx.coroutines.launch
 import org.example.p2e_map.date.Place
 import org.example.p2e_map.widgets.*
 import ovh.plrapps.mapcompose.api.*
@@ -12,6 +13,7 @@ import ovh.plrapps.mapcompose.ui.state.MapState
 @Composable
 fun App() {
     MaterialTheme {
+        val scope = rememberCoroutineScope()
         val mapState = remember {
             MapState(
                 levelCount = 1,
@@ -29,7 +31,7 @@ fun App() {
             mutableStateOf(mapState.scale)
         }
         mapState.setStateChangeListener {
-            if (zoom!=scale) zoom = scale
+            if (zoom != scale) zoom = scale
         }
         val action = { place: Place ->
             mapState.removeMarker("selected-${selectedPlace.id}")
@@ -42,7 +44,11 @@ fun App() {
                 UiPinImage({ showCallout(mapState, place) }, place, true)
             }
         }
-
+        val onTitleClick: () -> Unit = {
+            scope.launch {
+                mapState.centerOnMarker("${selectedPlace.id}")
+            }
+        }
         LaunchedEffect(Unit) {
             Place.allPlaces.forEach {
                 addPin(action, mapState, it)
@@ -53,7 +59,8 @@ fun App() {
             currentPlace = selectedPlace,
             zoom = zoom,
             mapState = mapState,
-            onEnableStateChange = action
+            onEnableStateChange = action,
+            onTitleClick = onTitleClick
         ) { paddingValues ->
             UiMapContainer(modifier = Modifier.padding(paddingValues), mapState = mapState)
         }

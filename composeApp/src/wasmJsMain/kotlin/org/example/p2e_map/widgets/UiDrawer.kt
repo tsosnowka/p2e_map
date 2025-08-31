@@ -1,16 +1,17 @@
 package org.example.p2e_map.widgets
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.style.TextAlign
@@ -25,11 +26,6 @@ import org.jetbrains.skiko.hostOs
 import ovh.plrapps.mapcompose.api.*
 import ovh.plrapps.mapcompose.ui.state.MapState
 import p2e_map.composeapp.generated.resources.*
-import p2e_map.composeapp.generated.resources.Res
-import p2e_map.composeapp.generated.resources.arrow_back
-import p2e_map.composeapp.generated.resources.menu
-import p2e_map.composeapp.generated.resources.zoom_in
-import kotlin.math.max
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -37,22 +33,25 @@ fun DetailedDrawerExample(
     currentPlace: Place,
     zoom: Double,
     onEnableStateChange: (Place) -> Unit,
+    onTitleClick:()->Unit,
     mapState: MapState,
     content: @Composable (PaddingValues) -> Unit
 ) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
-    val step = 1.10
+
     ModalNavigationDrawer(
         drawerContent = {
             ModalDrawerSheet {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.fillMaxWidth().pointerInput(Unit) {
-                        detectTapGestures(
-                            onTap = { scope.launch { drawerState.close() } }
-                        )
-                    }
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .pointerInput(Unit) {
+                            detectTapGestures(
+                                onTap = { scope.launch { drawerState.close() } }
+                            )
+                        }
                 ) {
                     IconButton(
                         onClick = {
@@ -83,7 +82,7 @@ fun DetailedDrawerExample(
                     )
                     HorizontalDivider()
                     Place.allPlaces.forEach { place ->
-                        UiDrawerItem(place) {
+                        UiDrawerItem(place,place.id==currentPlace.id) {
                             onEnableStateChange(place)
                             scope.launch { drawerState.close() }
                             scope.launch { mapState.centerOnMarker("${it.id}") }
@@ -99,10 +98,23 @@ fun DetailedDrawerExample(
             topBar = {
                 TopAppBar(
                     title = {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            VerticalDivider(Modifier.padding(vertical = 12.dp).padding(end = 4.dp))
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .pointerInput(Unit) {
+                                    detectTapGestures(
+                                        onTap = { onTitleClick() }
+                                    )
+                                },
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            VerticalDivider(
+                                modifier = Modifier
+                                    .padding(vertical = 12.dp)
+                                    .padding(end = 4.dp)
+                            )
                             Box(
-                                Modifier
+                                modifier = Modifier
                                     .size(32.dp)
                                     .background(
                                         color = MyColors.pinEnabledColor,
@@ -120,8 +132,8 @@ fun DetailedDrawerExample(
                                     textAlign = TextAlign.Center
                                 )
                             }
-                            Spacer(Modifier.padding(2.dp))
-                            Text(currentPlace.description)
+                            Spacer(modifier = Modifier.padding(2.dp))
+                            Text(text = currentPlace.description)
                         }
                     },
                     navigationIcon = {
@@ -142,7 +154,12 @@ fun DetailedDrawerExample(
                 )
             },
             bottomBar = {
-                Box(modifier = Modifier.fillMaxWidth().height(48.dp), contentAlignment = Alignment.Center) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(48.dp),
+                    contentAlignment = Alignment.Center
+                ) {
                     Row(
                         modifier = Modifier.wrapContentSize().align(Alignment.CenterStart),
                         verticalAlignment = Alignment.CenterVertically,
