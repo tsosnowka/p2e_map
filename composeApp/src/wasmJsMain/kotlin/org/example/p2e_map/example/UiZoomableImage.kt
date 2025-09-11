@@ -1,6 +1,5 @@
-package org.example.p2e_map.widgets
+package org.example.p2e_map.example
 
-import p2e_map.composeapp.generated.resources.Res
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.*
@@ -18,6 +17,7 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.unit.IntSize
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
+import kotlin.math.abs
 
 @Composable
 fun UiZoomableImage(
@@ -95,7 +95,7 @@ fun UiZoomableImage(
     ) {
         Image(
             painter = painter,
-            contentDescription = "Zoomable image",
+            contentDescription = null,
             contentScale = ContentScale.Fit, // zmień na Crop jeśli chcesz bez „belkowania”
             modifier = Modifier
                 .fillMaxSize()
@@ -114,8 +114,8 @@ fun UiZoomableImage(
 private fun clampPanAllowWhenZoomedOut(p: Offset, s: Float, sz: IntSize): Offset {
     val halfW = sz.width * 0.5f
     val halfH = sz.height * 0.5f
-    val extentX = kotlin.math.abs(s - 1f) * halfW
-    val extentY = kotlin.math.abs(s - 1f) * halfH
+    val extentX = abs(s - 1f) * halfW
+    val extentY = abs(s - 1f) * halfH
     return Offset(
         p.x.coerceIn(-extentX, extentX),
         p.y.coerceIn(-extentY, extentY)

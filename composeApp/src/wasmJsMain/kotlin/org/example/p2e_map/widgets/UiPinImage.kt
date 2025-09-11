@@ -12,7 +12,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import org.example.p2e_map.date.Place
+import org.example.p2e_map.data.Place
 import org.jetbrains.compose.resources.painterResource
 import p2e_map.composeapp.generated.resources.Res
 import p2e_map.composeapp.generated.resources.pin_disabled
@@ -38,7 +38,7 @@ fun UiPinImage(
     ) {
         Image(
             modifier = Modifier.fillMaxSize(),
-            contentDescription = "Pin",
+            contentDescription = null,
             painter = painter
         )
         Text(

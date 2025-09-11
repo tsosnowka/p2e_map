@@ -10,7 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
-import org.example.p2e_map.date.Place
+import org.example.p2e_map.data.Place
 import ovh.plrapps.mapcompose.api.removeCallout
 import ovh.plrapps.mapcompose.ui.state.MapState
 
