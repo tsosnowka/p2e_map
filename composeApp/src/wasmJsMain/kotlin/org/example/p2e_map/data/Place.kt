@@ -1,4 +1,6 @@
-package org.example.p2e_map.date
+package org.example.p2e_map.data
+
+import org.example.p2e_map.utils.comparatorPl
 
 class Place(
     val x: Double,
@@ -9,8 +11,9 @@ class Place(
 
     companion object {
         var allPlaces = getAll()
+
         //source of positions of the pins 1920x1080
-        fun getAll(width: Int=1920, height: Int=1080) = listOf(
+        fun getAll(width: Int = 1920, height: Int = 1080) = listOf(
             Place(299.0 / width, 96.0 / height, "Kartograf Gorgias", 1),
             Place(430.0 / width, 198.0 / height, "Stocznia", 2),
             Place(483.0 / width, 198.0 / height, "Kuźnia Olberga", 3),
@@ -58,7 +61,7 @@ class Place(
             Place(1181.0 / width, 531.0 / height, "Świątynia Trastigosa Świetlistego", 45),
             Place(1263.0 / width, 338.0 / height, "Twierdza Miejska/Skarbiec", 46)
         ).sortedWith(
-            compareBy(String.CASE_INSENSITIVE_ORDER) { it.description }
+            comparatorPl { it.description }
         ).mapIndexed { index, places ->
             Place(
                 x = places.x,

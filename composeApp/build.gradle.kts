@@ -1,6 +1,7 @@
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpackConfig
 import tiler.GenerateTiles
+import tiler.MoveDistribution
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -51,6 +52,13 @@ tasks.register<GenerateTiles>("generateTiles") {
     group = "tiles"
     description = "Tnie obraz na kafelki do tiles/<zoom>/<row>/<col>.<format>"
 }
+
+tasks.register<MoveDistribution>("moveDistribustion") {
+    group = "kotlin browser"
+    description = ""
+    dependsOn("wasmJsBrowserDistribution")
+}
+
 /**
 ./gradlew :composeApp:generateTiles -Psrc=C:\\git\\p2e_map\\composeApp\\src\\wasmJsMain\\composeResources\\drawable\\oklyon.png -Pout=C:\\git\\p2e_map\\composeApp\\src\\wasmJsMain\\composeResources\\drawable\\tiles -Ptile=256 -Plevels=1 -Pformat=png
  */
