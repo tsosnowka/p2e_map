@@ -1,5 +1,6 @@
 package org.example.p2e_map.widgets
 
+import androidx.compose.foundation.gestures.detectTransformGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
@@ -9,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.onPointerEvent
+import androidx.compose.ui.input.pointer.pointerInput
 import kotlinx.coroutines.launch
 import kotlinx.io.Buffer
 import kotlinx.io.RawSource
@@ -26,34 +28,49 @@ fun UiMapContainer(
     mapState: MapState,
     modifier: Modifier = Modifier
 ) {
-//    mapState.disableZooming()
-//    mapState.disableFlingZoom()
+    mapState.disableZooming()
+    mapState.disableFlingZoom()
+    val scope = rememberCoroutineScope()
     var newModifier: Modifier = modifier
-//    if (hostOs.isLinux || hostOs.isWindows || hostOs.isMacOS) {
-//        val step = 1.2
-//        val scope = rememberCoroutineScope()
-//        newModifier = newModifier
-//            .onPointerEvent(
-//                eventType = PointerEventType.Scroll,
-//                pass = PointerEventPass.Initial
-//            ) { ev ->
-//                val firstChange = ev.changes.firstOrNull() ?: return@onPointerEvent
-//                val dy = firstChange.scrollDelta.y
-//                val factor = if (dy < 0f) step else (1.0 / step)
-//                val oldScale = mapState.scale
-//                val newScale = (oldScale * factor)
-//                ev.changes.forEach { it.consume() }
-//                val newX = mapState.centroidX
-//                val newY = mapState.centroidY
-//                mapState.scale = newScale
-//                scope.launch {
-//                    mapState.snapScrollTo(
-//                        newX,
-//                        newY
-//                    )
-//                }
-//            }
-//    }
+    if (hostOs.isLinux || hostOs.isWindows || hostOs.isMacOS) {
+        val step = 1.2
+        newModifier = newModifier
+            .onPointerEvent(
+                eventType = PointerEventType.Scroll,
+                pass = PointerEventPass.Initial
+            ) { ev ->
+                val firstChange = ev.changes.firstOrNull() ?: return@onPointerEvent
+                val dy = firstChange.scrollDelta.y
+                val factor = if (dy < 0f) step else (1.0 / step)
+                val oldScale = mapState.scale
+                val newScale = (oldScale * factor)
+                ev.changes.forEach { it.consume() }
+                val newX = mapState.centroidX
+                val newY = mapState.centroidY
+                mapState.scale = newScale
+                scope.launch {
+                    mapState.snapScrollTo(
+                        newX,
+                        newY
+                    )
+                }
+            }
+    } else {
+        newModifier = newModifier
+            .pointerInput(Unit) {
+                detectTransformGestures(panZoomLock = false) { centroid, pan, zoom, _rotation ->
+                    val newX = mapState.centroidX
+                    val newY = mapState.centroidY
+                    mapState.scale = 1.0 + zoom
+                    scope.launch {
+                        mapState.snapScrollTo(
+                            newX,
+                            newY
+                        )
+                    }
+                }
+            }
+    }
     Box(
         newModifier.fillMaxSize()
     ) {
